@@ -4,7 +4,10 @@ import {
   signInWithEmailAndPassword, 
   signOut,
   updateProfile,
-  getAuth
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signInAnonymously
 } from "firebase/auth";
 import { doc, setDoc, getFirestore } from "firebase/firestore";
 import { useToast } from "@/hooks/use-toast";
@@ -27,7 +30,7 @@ export function useAuth() {
       });
       setLocation("/game");
       return userCredential.user;
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Login failed",
         description: error.message,
@@ -66,7 +69,7 @@ export function useAuth() {
       
       setLocation("/game");
       return user;
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Registration failed",
         description: error.message,
@@ -88,7 +91,7 @@ export function useAuth() {
       });
       setLocation("/");
       return true;
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Logout failed",
         description: error.message,
@@ -101,10 +104,93 @@ export function useAuth() {
     }
   }, [auth, toast, setLocation]);
 
+  const loginWithGoogle = useCallback(async () => {
+    setLoading(true);
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      
+      // Store user data in Firestore if it's a new user
+      await setDoc(doc(db, "users", user.uid), {
+        username: user.displayName,
+        email: user.email,
+        photoURL: user.photoURL,
+        createdAt: new Date(),
+      }, { merge: true });  // merge: true to avoid overwriting existing data
+      
+      toast({
+        title: "Google login successful",
+        description: `Welcome, ${user.displayName}!`,
+      });
+      
+      setLocation("/game");
+      return user;
+    } catch (error: any) {
+      console.error("Google login error:", error);
+      
+      // Don't show the popup cancellation as an error
+      if (error.code !== 'auth/popup-closed-by-user') {
+        toast({
+          title: "Google login failed",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
+      
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, [auth, db, toast, setLocation]);
+
+  const loginAsGuest = useCallback(async () => {
+    setLoading(true);
+    try {
+      const result = await signInAnonymously(auth);
+      const user = result.user;
+      
+      // Generate a random guest name
+      const guestName = `Guest_${Math.floor(Math.random() * 10000)}`;
+      
+      // Set display name for the anonymous user
+      await updateProfile(user, {
+        displayName: guestName
+      });
+      
+      // Store minimal guest data in Firestore
+      await setDoc(doc(db, "users", user.uid), {
+        username: guestName,
+        isGuest: true,
+        createdAt: new Date(),
+      });
+      
+      toast({
+        title: "Logged in as guest",
+        description: `Welcome, ${guestName}! Your scores will be saved as a guest.`,
+      });
+      
+      setLocation("/game");
+      return user;
+    } catch (error: any) {
+      console.error("Guest login error:", error);
+      toast({
+        title: "Guest login failed",
+        description: error.message,
+        variant: "destructive",
+      });
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, [auth, db, toast, setLocation]);
+
   return {
     login,
     register,
     logout,
+    loginWithGoogle,
+    loginAsGuest,
     loading
   };
 }
