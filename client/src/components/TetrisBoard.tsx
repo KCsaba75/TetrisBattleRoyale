@@ -3,11 +3,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "@/components/ui/button";
 import { TETROMINOS } from "@/lib/tetris";
 
-interface Cell {
-  value: number;
-  status: string;
-  color: string;
-}
+// Játéktábla celláját reprezentáló típus (tömb formátumban)
+// [0]: érték (0 = üres, >0 = tetromino)
+// [1]: státusz (pl. "clear", "merged", stb.)
+// [2]: szín (CSS színkód)
+type Cell = [number, string, string];
 
 interface TetrisBoardProps {
   stage: Cell[][];
@@ -79,9 +79,9 @@ const TetrisBoard = ({ stage, gameOver, score, onRestart, paused }: TetrisBoardP
                   style={{ 
                     width: `${cellSize}px`, 
                     height: `${cellSize}px`,
-                    backgroundColor: cell.value !== 0 ? cell.color : 'rgba(0,0,0,0.2)',
+                    backgroundColor: cell[0] !== 0 ? cell[2] : 'rgba(0,0,0,0.2)',
                     transition: 'background-color 0.1s',
-                    boxShadow: cell.value !== 0 ? 'inset 0 0 5px rgba(255, 255, 255, 0.5)' : 'none'
+                    boxShadow: cell[0] !== 0 ? 'inset 0 0 5px rgba(255, 255, 255, 0.5)' : 'none'
                   }}
                 />
               ))
