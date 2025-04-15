@@ -17,12 +17,15 @@ import {
 
 export const useGame = () => {
   const [stage, setStage] = useState(createStage());
-  const [nextPiece, setNextPiece] = useState(null);
-  const [player, setPlayer] = useState({
-    pos: { x: 0, y: 0 },
-    tetromino: TETROMINOS[0].shape,
-    collided: false,
-    color: 'transparent'
+  const [nextPiece, setNextPiece] = useState(TETROMINOS["I"]);
+  const [player, setPlayer] = useState(() => {
+    // Initialize player with the correct structure
+    return {
+      pos: { x: 0, y: 0 },
+      tetromino: [[0]],  // Start with a simple empty array
+      collided: false,
+      color: 'transparent'
+    };
   });
   
   const [gameState, setGameState] = useState(initialGameState);
@@ -86,18 +89,21 @@ export const useGame = () => {
       row.map(cell => (cell[1] === 'clear' ? [0, 'clear'] : cell))
     );
 
-    // Draw the tetromino
-    player.tetromino.forEach((row, y) => {
-      row.forEach((value, x) => {
-        if (value !== 0) {
-          newStage[y + player.pos.y][x + player.pos.x] = [
-            value,
-            `${player.collided ? 'merged' : 'clear'}`,
-            player.color
-          ];
-        }
+    // Safely check if tetromino exists before drawing it
+    if (player.tetromino && Array.isArray(player.tetromino)) {
+      // Draw the tetromino
+      player.tetromino.forEach((row, y) => {
+        row.forEach((value, x) => {
+          if (value !== 0) {
+            newStage[y + player.pos.y][x + player.pos.x] = [
+              value,
+              `${player.collided ? 'merged' : 'clear'}`,
+              player.color
+            ];
+          }
+        });
       });
-    });
+    }
 
     // Check if we have collided
     if (player.collided) {
@@ -151,29 +157,42 @@ export const useGame = () => {
 
   // Reset player
   const resetPlayer = useCallback(() => {
-    if (nextPiece) {
-      // Use the next piece that was shown in the preview
+    try {
+      if (nextPiece) {
+        // Use the next piece that was shown in the preview
+        setPlayer({
+          pos: { x: 3, y: 0 },
+          tetromino: nextPiece.shape || [[0]],
+          collided: false,
+          color: nextPiece.color || 'transparent'
+        });
+        
+        // Generate new next piece
+        setNextPiece(randomTetromino());
+      } else {
+        // This happens on initial game load
+        const piece = randomTetromino();
+        setPlayer({
+          pos: { x: 3, y: 0 },
+          tetromino: piece.shape || [[0]],
+          collided: false,
+          color: piece.color || 'transparent'
+        });
+        
+        // Generate next piece
+        setNextPiece(randomTetromino());
+      }
+    } catch (error) {
+      console.error("Error resetting player:", error);
+      // Last resort fallback to prevent crashing
       setPlayer({
         pos: { x: 3, y: 0 },
-        tetromino: nextPiece.shape,
+        tetromino: [[0]],
         collided: false,
-        color: nextPiece.color
+        color: 'transparent'
       });
       
-      // Generate new next piece
-      setNextPiece(randomTetromino());
-    } else {
-      // This happens on initial game load
-      const piece = randomTetromino();
-      setPlayer({
-        pos: { x: 3, y: 0 },
-        tetromino: piece.shape,
-        collided: false,
-        color: piece.color
-      });
-      
-      // Generate next piece
-      setNextPiece(randomTetromino());
+      setNextPiece(TETROMINOS.I);
     }
   }, [nextPiece]);
 

@@ -61,9 +61,22 @@ export const TETROMINOS = {
 
 // Generate a random tetromino
 export const randomTetromino = () => {
-  const tetrominos = "IJLOSTZ";
-  const randTetromino = tetrominos[Math.floor(Math.random() * tetrominos.length)];
-  return TETROMINOS[randTetromino];
+  try {
+    const tetrominos = "IJLOSTZ";
+    const randTetromino = tetrominos[Math.floor(Math.random() * tetrominos.length)];
+    
+    // Verify that we have a valid tetromino key
+    if (!randTetromino || !TETROMINOS[randTetromino]) {
+      console.warn("Generated invalid tetromino key, defaulting to I", randTetromino);
+      return TETROMINOS["I"];
+    }
+    
+    return TETROMINOS[randTetromino];
+  } catch (error) {
+    console.error("Error generating random tetromino:", error);
+    // Return a default I tetromino if there's any error
+    return TETROMINOS["I"];
+  }
 };
 
 // Create a stage (game grid)
@@ -74,10 +87,15 @@ export const createStage = (width = 10, height = 20) =>
 
 // Check if cell collides with any obstacle
 export const checkCollision = (player, stage, { x: moveX, y: moveY }) => {
-  for (let y = 0; y < player.tetromino.shape.length; y++) {
-    for (let x = 0; x < player.tetromino.shape[y].length; x++) {
+  // If the tetromino doesn't exist or isn't an array, return false to prevent errors
+  if (!player.tetromino || !Array.isArray(player.tetromino)) {
+    return false;
+  }
+  
+  for (let y = 0; y < player.tetromino.length; y++) {
+    for (let x = 0; x < player.tetromino[y].length; x++) {
       // Check if we're on an actual Tetromino cell
-      if (player.tetromino.shape[y][x] !== 0) {
+      if (player.tetromino[y][x] !== 0) {
         if (
           // Check if our move is inside the game area height (y)
           !stage[y + player.pos.y + moveY] ||
