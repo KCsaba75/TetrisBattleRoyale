@@ -2,9 +2,47 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <title>Tetris Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="description" content="Modern Tetris game with customizable options and leaderboard" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no" />
+    
+    <!-- Prevent browser overscroll and inertia scrolling -->
+    <meta name="msapplication-tap-highlight" content="no" />
+    
+    <!-- PWA support icons -->
+    <link rel="icon" type="image/png" href="/tetris-icon.png" />
+    <link rel="apple-touch-icon" href="/tetris-icon.png" />
+    
+    <title>Tetrisz - Online Tetris Game</title>
+    
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Prevent zooming on mobile when tapping buttons rapidly -->
+    <style>
+      html, body {
+        touch-action: manipulation;
+        overflow: hidden;
+        overscroll-behavior: none;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+      }
+      #root {
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        overscroll-behavior: none;
+      }
+      /* Disable the tap highlight on buttons and links on mobile */
+      * {
+        -webkit-tap-highlight-color: transparent;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
