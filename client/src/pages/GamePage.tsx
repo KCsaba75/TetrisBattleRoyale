@@ -40,17 +40,22 @@ export default function GamePage() {
     async function fetchHighScore() {
       if (auth.currentUser) {
         try {
-          const scoresRef = collection(db, "scores");
-          const q = query(
-            scoresRef, 
-            where("userId", "==", auth.currentUser.uid),
-            orderBy("score", "desc"),
-            limit(1)
-          );
-          
-          const querySnapshot = await getDocs(q);
-          if (!querySnapshot.empty) {
-            setHighScore(querySnapshot.docs[0].data().score);
+          try {
+            const scoresRef = collection(db, "scores");
+            const q = query(
+              scoresRef, 
+              where("userId", "==", auth.currentUser.uid),
+              orderBy("score", "desc"),
+              limit(1)
+            );
+            
+            const querySnapshot = await getDocs(q);
+            if (!querySnapshot.empty) {
+              setHighScore(querySnapshot.docs[0].data().score);
+            }
+          } catch (firestoreError) {
+            console.log("User scores might not exist yet:", firestoreError);
+            // Inicializáljuk 0-val, mivel még nincs korábbi pontszám
           }
         } catch (error) {
           console.error("Error fetching high score:", error);
