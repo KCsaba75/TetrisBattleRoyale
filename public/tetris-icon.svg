@@ -1,0 +1,33 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" rx="64" fill="#000000"/>
+  
+  <!-- Tetris Blocks -->
+  <!-- I Piece (Cyan) -->
+  <rect x="112" y="96" width="60" height="60" rx="8" fill="#00FFFF" />
+  <rect x="172" y="96" width="60" height="60" rx="8" fill="#00FFFF" />
+  <rect x="232" y="96" width="60" height="60" rx="8" fill="#00FFFF" />
+  <rect x="292" y="96" width="60" height="60" rx="8" fill="#00FFFF" />
+  
+  <!-- T Piece (Magenta) -->
+  <rect x="172" y="176" width="60" height="60" rx="8" fill="#FF00FF" />
+  <rect x="232" y="176" width="60" height="60" rx="8" fill="#FF00FF" />
+  <rect x="292" y="176" width="60" height="60" rx="8" fill="#FF00FF" />
+  <rect x="232" y="236" width="60" height="60" rx="8" fill="#FF00FF" />
+  
+  <!-- O Piece (Yellow) -->
+  <rect x="112" y="176" width="60" height="60" rx="8" fill="#FFFF00" />
+  <rect x="112" y="236" width="60" height="60" rx="8" fill="#FFFF00" />
+  <rect x="172" y="236" width="60" height="60" rx="8" fill="#FFFF00" />
+  
+  <!-- L Piece (Blue) -->
+  <rect x="352" y="176" width="60" height="60" rx="8" fill="#0000FF" />
+  <rect x="352" y="236" width="60" height="60" rx="8" fill="#0000FF" />
+  <rect x="352" y="296" width="60" height="60" rx="8" fill="#0000FF" />
+  <rect x="292" y="296" width="60" height="60" rx="8" fill="#0000FF" />
+  
+  <!-- Z Piece (Red) -->
+  <rect x="112" y="296" width="60" height="60" rx="8" fill="#FF0000" />
+  <rect x="172" y="296" width="60" height="60" rx="8" fill="#FF0000" />
+  <rect x="172" y="356" width="60" height="60" rx="8" fill="#FF0000" />
+  <rect x="232" y="356" width="60" height="60" rx="8" fill="#FF0000" />
+</svg>
