@@ -6,8 +6,8 @@ import GameInfo from "@/components/GameInfo";
 import GameSettings from "@/components/GameSettings";
 import NavBar from "@/components/NavBar";
 import { useGame } from "@/hooks/useGame";
-import { getFirestore, doc, collection, getDocs, query, where, orderBy, limit } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+import { collection, getDocs, query, where, orderBy, limit } from "firebase/firestore";
+import { auth, db } from "@/lib/firebase";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function GamePage() {
@@ -32,8 +32,6 @@ export default function GamePage() {
   } = useGame();
   
   const [highScore, setHighScore] = useState(0);
-  const db = getFirestore();
-  const auth = getAuth();
   
   // Get user's high score from Firestore
   useEffect(() => {
@@ -64,7 +62,7 @@ export default function GamePage() {
     }
     
     fetchHighScore();
-  }, [auth.currentUser, db, gameState.gameOver]);
+  }, [gameState.gameOver]);
   
   return (
     <div className="min-h-screen w-full bg-gradient-to-b from-black to-gray-900 bg-fixed">

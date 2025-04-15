@@ -1,12 +1,21 @@
 import { useState, useEffect } from "react";
-import { getFirestore, collection, query, orderBy, limit, getDocs } from "firebase/firestore";
+import { getFirestore, collection, query, orderBy, limit, getDocs, DocumentData } from "firebase/firestore";
 import { useToast } from "@/hooks/use-toast";
+import { db as firebaseDb } from "@/lib/firebase";
 
 export function useLeaderboard() {
-  const [leaderboard, setLeaderboard] = useState([]);
+  const [leaderboard, setLeaderboard] = useState<Array<{
+    id: string;
+    rank: number;
+    username: string;
+    score: number;
+    level: number;
+    lines: number;
+    date: string;
+  }>>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
-  const db = getFirestore();
+  const db = firebaseDb; // Használjuk a már inicializált adatbázist
 
   useEffect(() => {
     async function fetchLeaderboard() {
@@ -23,10 +32,10 @@ export function useLeaderboard() {
             return {
               id: doc.id,
               rank: index + 1,
-              username: data.username,
-              score: data.score,
-              level: data.level,
-              lines: data.lines,
+              username: data.username || "Anonymous",
+              score: data.score || 0,
+              level: data.level || 1,
+              lines: data.lines || 0,
               date: data.createdAt ? new Date(data.createdAt.toDate()).toLocaleDateString() : "N/A"
             };
           });
